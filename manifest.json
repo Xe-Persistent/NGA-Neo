@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "NGA优化摸鱼体验",
+  "version": "0.1.0",
+  "description": "NGA论坛显示优化，全面功能增强，优雅的摸鱼",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://bbs.nga.cn/*",
+        "*://ngabbs.com/*",
+        "*://nga.178.com/*",
+        "*://g.nga.cn/*"
+      ],
+      "js": ["src/content/index.ts"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "*://bbs.nga.cn/*",
+        "*://ngabbs.com/*",
+        "*://nga.178.com/*",
+        "*://g.nga.cn/*"
+      ],
+      "js": ["src/injected/main.ts"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ],
+  "host_permissions": [
+    "*://bbs.nga.cn/*",
+    "*://ngabbs.com/*",
+    "*://nga.178.com/*",
+    "*://g.nga.cn/*"
+  ]
+}

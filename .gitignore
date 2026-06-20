@@ -1,0 +1,8 @@
+.idea/
+.vscode/
+legacy/
+node_modules/
+dist/
+*.log
+*.crx
+*.pem
