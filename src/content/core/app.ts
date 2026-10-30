@@ -1,29 +1,9 @@
-import { Storage } from "./storage";
-import { MODULE_SETTINGS } from "../../config/settings";
-
-export interface PluginSetting {
-  type?: "normal" | "advanced";
-  key: string;
-  default?: unknown;
-  title?: string;
-  desc?: string;
-  menu?: "left" | "right";
-  extra?: {
-    mode?: "fold" | "expand";
-    id?: string;
-    label?: string;
-  };
-  options?: Array<{ label: string; value: string | number }>;
-}
+import { Storage } from './storage';
+import type { PluginSetting, AppSettings } from '@/config/settings';
+import { normalSettings, advancedSettings } from '@/config/settings';
 
 export interface NGA_Module {
   name: string;
-  title?: string;
-  version?: string;
-  type?: "plugin" | "core";
-  setting?: PluginSetting;
-  settings?: PluginSetting[];
-  style?: string;
 
   preProcFunc?: (app: NGABBSScript) => void;
   initFunc?: (app: NGABBSScript) => void;
@@ -31,25 +11,47 @@ export interface NGA_Module {
   renderAlwaysFunc?: (app: NGABBSScript) => void;
   renderThreadsFunc?: ($el: HTMLElement, app: NGABBSScript) => void;
   renderFormsFunc?: ($el: HTMLElement, app: NGABBSScript) => void;
-  asyncStyle?: (app: NGABBSScript) => string;
 }
 
 export class NGABBSScript {
   public modules: NGA_Module[] = [];
-  public style: string = "";
-  public setting: {
-    original: PluginSetting[];
-    normal: Record<string, unknown>;
-    advanced: Record<string, unknown>;
-  } = {
-    original: [],
-    normal: {},
-    advanced: {}
+  public setting: AppSettings = {
+    normal: {
+      hideAvatar: false,
+      hideSmile: false,
+      hideImage: false,
+      hideSign: true,
+      hideHeader: true,
+      imgResize: true,
+      imgEnhance: true,
+      excelMode: false,
+      authorMark: true,
+      autoPage: true,
+      userEnhance: true,
+      markAndBan: true,
+      directLinkJump: true,
+      foldQuote: true,
+      linkTargetBlank: false,
+      keywordsBlock: true,
+    },
+    advanced: {
+      imgResizeWidth: 200,
+      hideCustomBg: true,
+      kwdBlockContent: 'ALL',
+      domainRedirectTarget: '',
+      excelTheme: 'tencent',
+      excelNoMode: false,
+      excelTitle: '工作簿1',
+      foldQuoteHeight: 300,
+      authorMarkColor: '#F00',
+      banStrictMode: 'HIDE',
+    },
   };
   private readonly settingKeys = new Set<string>();
 
   constructor() {
-    this.addSettings(MODULE_SETTINGS);
+    this.addSettings(normalSettings, 'normal');
+    this.addSettings(advancedSettings, 'advanced');
   }
 
   /**
@@ -58,9 +60,9 @@ export class NGABBSScript {
   printLog(msg: string) {
     console.log(
       `%cNGA%cScript%c ${msg}`,
-      "background: #222;color: #fff;font-weight:bold;padding:2px 2px 2px 4px;border-radius:4px 0 0 4px;",
-      "background: #fe9a00;color: #000;font-weight:bold;padding:2px 4px 2px 2px;border-radius:0px 4px 4px 0px;",
-      "background:none;color:#000;"
+      'background: #222;color: #fff;font-weight:bold;padding:2px 2px 2px 4px;border-radius:4px 0 0 4px;',
+      'background: #fe9a00;color: #000;font-weight:bold;padding:2px 4px 2px 2px;border-radius:0px 4px 4px 0px;',
+      'background:none;color:#000;',
     );
   }
 
@@ -76,25 +78,18 @@ export class NGABBSScript {
         console.error(error);
       }
     }
-
-    if (module.setting) this.addSetting(module.setting);
-    if (module.settings) this.addSettings(module.settings);
-
-    if (module.style) this.style += module.style;
-
     this.modules.push(module);
   }
 
-  private addSetting(setting: PluginSetting) {
+  private addSetting(setting: PluginSetting, type: 'normal' | 'advanced') {
     if (!setting.key || this.settingKeys.has(setting.key)) return;
-    const type = setting.type || "normal";
-    this.setting[type][setting.key] = setting.default ?? "";
-    this.setting.original.push(setting);
+    const target = this.setting[type] as unknown as Record<string, unknown>;
+    target[setting.key] = setting.default ?? '';
     this.settingKeys.add(setting.key);
   }
 
-  private addSettings(settings: readonly PluginSetting[]) {
-    settings.forEach((setting) => this.addSetting(setting));
+  private addSettings(settings: readonly PluginSetting[], type: 'normal' | 'advanced') {
+    settings.forEach((setting) => this.addSetting(setting, type));
   }
 
   /**
@@ -105,39 +100,42 @@ export class NGABBSScript {
   }
 
   async loadSetting() {
-    const normalStr = await Storage.get<string>("hld__NGA_setting");
+    const normalStr = await Storage.get<string>('nga-setting');
     if (normalStr) {
       try {
         const localSetting = JSON.parse(normalStr) as Record<string, unknown>;
-        this.setting.normal = this.mergeKnownSettings("normal", localSetting);
+        this.setting.normal = this.mergeKnownSettings('normal', localSetting);
       } catch (e) {
-        console.error("Failed to parse normal setting", e);
+        console.error('Failed to parse normal setting', e);
       }
     }
 
-    const advStr = await Storage.get<string>("hld__NGA_advanced_setting");
+    const advStr = await Storage.get<string>('nga-advanced-setting');
     if (advStr) {
       try {
         const localAdv = JSON.parse(advStr) as Record<string, unknown>;
-        this.setting.advanced = this.mergeKnownSettings("advanced", localAdv);
+        this.setting.advanced = this.mergeKnownSettings('advanced', localAdv);
       } catch (e) {
-        console.error("Failed to parse advanced setting", e);
+        console.error('Failed to parse advanced setting', e);
       }
     }
   }
 
-  private mergeKnownSettings(type: "normal" | "advanced", localSetting: Record<string, unknown>) {
-    const merged = { ...this.setting[type] };
+  private mergeKnownSettings<K extends 'normal' | 'advanced'>(
+    type: K,
+    localSetting: Record<string, unknown>,
+  ): AppSettings[K] {
+    const merged = { ...this.setting[type] } as unknown as Record<string, unknown>;
     Object.entries(localSetting).forEach(([key, value]) => {
       if (key in merged) {
         merged[key] = value;
       }
     });
-    return merged;
+    return merged as unknown as AppSettings[K];
   }
 
   async init() {
-    this.printLog("Initializing...");
+    this.printLog('Initializing...');
     await this.loadSetting();
 
     // Init Func
@@ -163,31 +161,14 @@ export class NGABBSScript {
         }
       }
     }
-
-    // Async Styles
-    for (const module of this.modules) {
-      if (module.asyncStyle) {
-        try {
-          this.style += module.asyncStyle(this);
-        } catch {
-          this.printLog(`[${module.name}] asyncStyle error`);
-        }
-      }
-    }
-
-    if (this.style) {
-      const styleEl = document.createElement("style");
-      styleEl.textContent = this.style;
-      document.head.appendChild(styleEl);
-    }
   }
 
   isThreads() {
-    return document.getElementById("m_threads") !== null;
+    return document.getElementById('m_threads') !== null;
   }
 
   isForms() {
-    return document.getElementById("m_posts") !== null;
+    return document.getElementById('m_posts') !== null;
   }
 
   renderAlways() {
@@ -201,7 +182,7 @@ export class NGABBSScript {
   }
 
   renderThreads() {
-    const threadRows = document.querySelectorAll(".topicrow:not([hld-threads-render='ok'])");
+    const threadRows = document.querySelectorAll(".topicrow:not([nga-threads-render='ok'])");
     threadRows.forEach((row) => {
       const el = row as HTMLElement;
       for (const module of this.modules) {
@@ -211,15 +192,15 @@ export class NGABBSScript {
           console.error(`[${module.name}] renderThreads error`, error);
         }
       }
-      el.setAttribute("hld-threads-render", "ok");
+      el.setAttribute('nga-threads-render', 'ok');
     });
   }
 
   renderForms() {
-    const postBoxes = document.querySelectorAll(".forumbox.postbox:not([hld-forms-render='ok'])");
+    const postBoxes = document.querySelectorAll(".forumbox.postbox:not([nga-forms-render='ok'])");
     postBoxes.forEach((box) => {
       const el = box as HTMLElement;
-      if (!el.querySelector(".small_colored_text_btn")) return;
+      if (!el.querySelector('.small_colored_text_btn')) return;
       for (const module of this.modules) {
         try {
           module.renderFormsFunc?.(el, this);
@@ -227,7 +208,7 @@ export class NGABBSScript {
           console.error(`[${module.name}] renderForms error`, error);
         }
       }
-      el.setAttribute("hld-forms-render", "ok");
+      el.setAttribute('nga-forms-render', 'ok');
     });
   }
 

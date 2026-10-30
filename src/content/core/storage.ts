@@ -27,5 +27,5 @@ export const Storage = {
     return new Promise((resolve) => {
       chrome.storage.local.clear(() => resolve());
     });
-  }
+  },
 };

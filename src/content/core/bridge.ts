@@ -1,7 +1,6 @@
-const createRequestId = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+import { isRecord } from '@/lib/guards';
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
+const createRequestId = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export const NGA_Bridge = {
   /**
@@ -14,16 +13,16 @@ export const NGA_Bridge = {
         const data = event.data;
         if (
           isRecord(data) &&
-          data.type === "NGA_GLOBAL_RES" &&
+          data.type === 'NGA_GLOBAL_RES' &&
           data.key === key &&
           data.reqId === reqId
         ) {
-          window.removeEventListener("message", handler);
+          window.removeEventListener('message', handler);
           resolve((data.value as T) ?? null);
         }
       };
-      window.addEventListener("message", handler);
-      window.postMessage({ type: "NGA_GET_GLOBAL", key, reqId }, "*");
+      window.addEventListener('message', handler);
+      window.postMessage({ type: 'NGA_GET_GLOBAL', key, reqId }, '*');
     });
   },
 
@@ -36,16 +35,16 @@ export const NGA_Bridge = {
       const handler = (event: MessageEvent<unknown>) => {
         const data = event.data;
         if (isRecord(data) && data.reqId === reqId) {
-          window.removeEventListener("message", handler);
-          if (data.type === "NGA_CALL_RES") {
+          window.removeEventListener('message', handler);
+          if (data.type === 'NGA_CALL_RES') {
             resolve(data.result as T);
-          } else if (data.type === "NGA_CALL_ERR") {
+          } else if (data.type === 'NGA_CALL_ERR') {
             reject(data.error);
           }
         }
       };
-      window.addEventListener("message", handler);
-      window.postMessage({ type: "NGA_CALL_GLOBAL", func, args, reqId }, "*");
+      window.addEventListener('message', handler);
+      window.postMessage({ type: 'NGA_CALL_GLOBAL', func, args, reqId }, '*');
     });
-  }
+  },
 };
