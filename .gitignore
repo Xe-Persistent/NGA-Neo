@@ -3,6 +3,8 @@
 legacy/
 node_modules/
 dist/
+coverage/
 *.log
 *.crx
 *.pem
+*.tsbuildinfo
