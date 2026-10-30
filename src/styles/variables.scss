@@ -1,0 +1,30 @@
+// ==========================================
+// NGA 官方泥潭论坛风格 - 核心设计系统配色变量
+// ==========================================
+$nga-color-bg-paper: #fff9eb; // 经典泥潭信纸浅卡其背景色
+$nga-color-bg-input-focus: #fffdf5; // 输入框聚焦时略微提亮的卡其色
+$nga-color-bg-paper-light: #fffdf7; // 稍微亮一些的白卡其色，适合容器内部
+$nga-color-bg-paper-pure: #ffffff; // 纯白色
+$nga-color-bg-tab: #fffbf2; // 标签页未激活背景色
+$nga-color-bg-hover: #ebdfc3; // 悬浮/激活淡卡其色（标题栏也使用此色）
+$nga-color-bg-scroll-track: #fff2d6; // 滚动条轨道卡其色
+$nga-color-border-brown: #c7b38d; // 核心褐色边框与分割线
+$nga-color-border-dashed: #e8dfc7; // 虚线分割线褐色
+$nga-color-text-darkred: #591804; // 经典暗红色（用于大标题、分类标题、对话框标题等）
+$nga-color-text-gold: #fff0cd; // 标签页激活时的金黄浅色字
+$nga-color-text-main: #333333; // 正文深灰色
+$nga-color-text-desc: #777777; // 辅助注释及描述文字灰色
+$nga-color-text-desc-brown: #7a6642; // NGA 论坛特色浅褐色描述字
+$nga-color-danger: #ba2026; // 删除/警告/关闭的红色
+$nga-color-danger-hover: #ffebeb; // 警告 hover 背景色
+
+// 仿官方小木扁扁按钮专用色彩
+$nga-color-btn-bg: #f2e6cb;
+$nga-color-btn-border: #baa27a;
+$nga-color-btn-text: #5b1a0e;
+$nga-color-btn-hover: #baa27a;
+$nga-color-btn-active: #a38d68;
+
+// 关键/核心操作按钮专属色
+$nga-color-btn-critical-hover: #76230f;
+$nga-color-btn-critical-active: #441203;

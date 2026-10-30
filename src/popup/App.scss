@@ -1,0 +1,655 @@
+@use '../styles/variables' as *;
+
+// ==========================================
+// 基础元素与全局配置
+// ==========================================
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $nga-color-bg-paper;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: $nga-color-text-main;
+}
+
+// 统一的基础表单控件样式
+input[type='checkbox'] {
+  cursor: pointer;
+  accent-color: $nga-color-text-darkred; // 激活状态呈现经典暗红色
+}
+
+// ==========================================
+// 主 Popup 容器布局
+// ==========================================
+.nga-popup-container {
+  width: 420px;
+  box-sizing: border-box;
+  padding: 15px;
+  background-color: $nga-color-bg-paper;
+
+  // 选项卡系统
+  .nga-popup-tabs {
+    display: flex;
+    border-bottom: 1px solid $nga-color-border-brown;
+    margin-bottom: 15px;
+  }
+
+  .nga-popup-tab-btn {
+    flex: 1;
+    padding: 8px;
+    cursor: pointer;
+    background: $nga-color-bg-tab;
+    color: $nga-color-text-darkred;
+    border: 1px solid $nga-color-border-brown;
+    border-bottom: none;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s ease;
+
+    &:not(:first-child) {
+      border-left: none;
+    }
+
+    &:hover {
+      background: $nga-color-bg-hover;
+    }
+
+    &.nga-active {
+      background: $nga-color-text-darkred;
+      color: $nga-color-text-gold;
+      border-color: $nga-color-text-darkred;
+    }
+  }
+
+  // 滚动条样式
+  .nga-popup-content-scroll {
+    max-height: 380px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: $nga-color-border-brown;
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: $nga-color-bg-scroll-track;
+    }
+  }
+
+  // 基础设置两栏布局网格
+  .nga-popup-normal-settings {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 20px;
+    row-gap: 8px;
+    align-items: center;
+    padding-top: 12px;
+  }
+
+  // 基础设置复选框行
+  .nga-popup-setting-item {
+    margin-bottom: 12px;
+
+    label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      color: $nga-color-text-darkred;
+      user-select: none;
+    }
+
+    input[type='checkbox'] {
+      margin-right: 8px;
+    }
+  }
+
+  // 高级设置容器
+  .nga-popup-advanced-settings {
+    padding-top: 12px;
+  }
+
+  // 高级设置复合表单行
+  .nga-popup-adv-item {
+    height: 28px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
+
+    span {
+      flex-grow: 1;
+      margin-right: 15px;
+      font-weight: bold;
+      color: $nga-color-text-darkred;
+    }
+
+    // 基础输入控件样式
+    select,
+    input[type='number'],
+    input[type='text'],
+    input[type='color'] {
+      padding: 4px 6px;
+      border: 1px solid $nga-color-border-brown;
+      background-color: $nga-color-bg-paper-pure;
+      border-radius: 4px;
+      font-size: 12px;
+      outline: none;
+      box-sizing: border-box;
+      transition: all 0.2s;
+
+      &:focus {
+        border-color: $nga-color-text-darkred;
+        background-color: $nga-color-bg-input-focus;
+      }
+    }
+
+    input[type='color'] {
+      padding: 0;
+      width: 32px;
+      height: 24px;
+      cursor: pointer;
+      border: 1px solid $nga-color-border-brown;
+      background: transparent;
+    }
+
+    select {
+      width: 110px;
+      cursor: pointer;
+    }
+
+    input[type='number'] {
+      width: 70px;
+    }
+
+    input[type='text'] {
+      width: 140px;
+    }
+  }
+
+  // 列表与名单管理
+  .nga-popup-list-title {
+    margin: 15px 0 8px 0;
+    font-size: 13px;
+    font-weight: bold;
+    color: $nga-color-text-darkred;
+    border-left: 3px solid $nga-color-text-darkred;
+    padding-left: 6px;
+  }
+
+  .nga-popup-list-container {
+    background: $nga-color-bg-paper-light;
+    border: 1px solid $nga-color-border-dashed;
+    border-radius: 6px;
+    max-height: 140px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding: 5px;
+  }
+
+  .nga-popup-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    border-bottom: 1px dashed $nga-color-border-dashed;
+    font-size: 12px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .nga-user-info {
+      color: $nga-color-text-main;
+      font-weight: 500;
+    }
+
+    .nga-user-desc {
+      color: $nga-color-text-desc;
+      margin-left: 8px;
+      font-size: 11px;
+    }
+
+    .nga-mark-tag {
+      display: inline-block;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 10px;
+      margin-left: 4px;
+    }
+  }
+
+  // 列表项垂直布局类（用于带有用户标签的项）
+  .nga-popup-list-item-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 6px 8px;
+    border-bottom: 1px dashed $nga-color-border-dashed;
+    font-size: 12px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .nga-item-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .nga-item-tags {
+      margin-top: 5px;
+
+      .nga-mark-tag {
+        display: inline-block;
+        padding: 1px 4px;
+        border-radius: 3px;
+        font-size: 10px;
+        margin-right: 4px;
+      }
+    }
+  }
+
+  .nga-popup-delete-btn {
+    background: transparent;
+    border: none;
+    color: $nga-color-danger;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $nga-color-danger-hover;
+    }
+  }
+
+  .nga-popup-edit-btn {
+    background: transparent;
+    border: none;
+    color: $nga-color-text-desc-brown;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $nga-color-bg-hover;
+      color: $nga-color-btn-text;
+    }
+  }
+
+  .nga-item-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .nga-item-desc {
+    margin-top: 4px;
+    font-size: 11px;
+    color: $nga-color-text-desc-brown;
+  }
+
+  .nga-popup-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .nga-popup-list-title {
+      margin-bottom: 8px;
+    }
+  }
+
+  .nga-popup-add-btn {
+    background: transparent;
+    border: 1px dashed $nga-color-border-brown;
+    color: $nga-color-btn-text;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: $nga-color-bg-hover;
+    }
+  }
+
+  // 名单编辑弹窗
+  .nga-list-editor-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .nga-list-editor-panel {
+    width: 92%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 12px;
+    background: $nga-color-bg-paper;
+    border: 1px solid $nga-color-border-brown;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .nga-list-editor-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: $nga-color-text-darkred;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed $nga-color-border-dashed;
+  }
+
+  .nga-list-editor-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+
+    label {
+      flex-shrink: 0;
+      width: 52px;
+      color: $nga-color-text-main;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      padding: 4px 6px;
+      font-size: 12px;
+      color: $nga-color-text-main;
+      background: $nga-color-bg-paper-pure;
+      border: 1px solid $nga-color-border-brown;
+      border-radius: 4px;
+      outline: none;
+
+      &:focus {
+        border-color: $nga-color-text-darkred;
+      }
+    }
+  }
+
+  .nga-list-editor-hint {
+    margin: -2px 0 10px 52px;
+    font-size: 11px;
+    color: $nga-color-text-desc;
+  }
+
+  .nga-list-editor-field-label {
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: $nga-color-text-main;
+  }
+
+  .nga-list-editor-mark-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 6px;
+
+    input[type='text'] {
+      min-width: 0;
+      padding: 4px 6px;
+      font-size: 12px;
+      color: $nga-color-text-main;
+      background: $nga-color-bg-paper-pure;
+      border: 1px solid $nga-color-border-brown;
+      border-radius: 4px;
+      outline: none;
+
+      &:focus {
+        border-color: $nga-color-text-darkred;
+      }
+    }
+
+    input[type='color'] {
+      flex-shrink: 0;
+      width: 26px;
+      height: 24px;
+      padding: 0;
+      background: none;
+      border: 1px solid $nga-color-border-brown;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .nga-mark-name-input {
+      flex: 1.2;
+    }
+
+    .nga-mark-desc-input {
+      flex: 1.6;
+    }
+  }
+
+  .nga-list-editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed $nga-color-border-dashed;
+  }
+
+  .nga-popup-empty-tip {
+    text-align: center;
+    color: $nga-color-text-desc;
+    padding: 15px;
+    font-size: 12px;
+  }
+
+  .nga-popup-notice {
+    margin-bottom: 10px;
+    padding: 6px 8px;
+    font-size: 12px;
+    color: $nga-color-btn-text;
+    background: $nga-color-bg-hover;
+    border: 1px dashed $nga-color-border-brown;
+    border-radius: 4px;
+  }
+
+  // 文本域与配置备份导入
+  .nga-popup-textarea-container {
+    h4 {
+      margin: 12px 0 8px 0;
+      font-size: 13px;
+      color: $nga-color-text-darkred;
+    }
+
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      border: 1px solid $nga-color-border-brown;
+      background-color: $nga-color-bg-paper-pure;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.2s;
+
+      &:focus {
+        border-color: $nga-color-text-darkred;
+      }
+    }
+  }
+
+  // 按钮系统
+  .nga-popup-action-btn {
+    background: $nga-color-btn-bg;
+    border: 1px solid $nga-color-btn-border;
+    color: $nga-color-btn-text;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      background: $nga-color-btn-hover;
+      color: $nga-color-bg-paper-pure;
+    }
+
+    &:active {
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// ==========================================
+// 间距辅助类名
+// ==========================================
+.nga-margin-top-5 {
+  margin-top: 5px;
+}
+
+.nga-margin-top-8 {
+  margin-top: 8px;
+}
+
+.nga-margin-top-15 {
+  margin-top: 15px;
+}
+
+.nga-margin-bottom-15 {
+  margin-bottom: 15px;
+}
+
+// ==========================================
+// 关于/备份页 (AboutTab) 样式
+// ==========================================
+.nga-about-container {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .nga-about-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed $nga-color-border-dashed;
+
+    .nga-about-logo {
+      width: 42px;
+      height: 42px;
+      background-color: $nga-color-text-darkred;
+      color: $nga-color-text-gold;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(89, 24, 4, 0.15);
+    }
+
+    .nga-about-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      .nga-about-name {
+        margin: 0;
+        font-size: 14px;
+        font-weight: bold;
+        color: $nga-color-text-darkred;
+      }
+
+      .nga-about-version {
+        font-size: 11px;
+        color: $nga-color-text-desc-brown;
+      }
+    }
+  }
+
+  .nga-about-desc {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: $nga-color-text-main;
+  }
+
+  .nga-about-links {
+    display: flex;
+    gap: 10px;
+
+    .nga-about-link-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: $nga-color-text-darkred;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 6px 10px;
+      background: $nga-color-bg-paper-light;
+      border: 1px solid $nga-color-border-brown;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+
+      .github-icon {
+        color: $nga-color-text-darkred;
+      }
+
+      &:hover {
+        background: $nga-color-bg-hover;
+        color: $nga-color-text-darkred;
+      }
+    }
+  }
+
+  .nga-about-section {
+    background: $nga-color-bg-paper-light;
+    border: 1px solid $nga-color-border-brown;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 5px;
+
+    .nga-about-section-title {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+      font-weight: bold;
+      color: $nga-color-text-darkred;
+    }
+
+    .nga-about-section-desc {
+      margin: 0 0 10px 0;
+      font-size: 11px;
+      color: $nga-color-text-desc;
+      line-height: 1.4;
+    }
+
+    .nga-about-actions {
+      display: flex;
+      gap: 10px;
+
+      .nga-popup-action-btn {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+}
