@@ -1,0 +1,112 @@
+.postcontent img {
+  margin: 0 5px 5px 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  max-height: none !important;
+
+  &[nga-imglist='ready'] {
+    cursor: zoom-in;
+  }
+}
+
+#nga-img-full {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 99999;
+
+  #loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: nga-img-loader 0.8s linear infinite;
+  }
+
+  img {
+    cursor: move;
+    transition: transform 0.2s ease;
+    user-select: none;
+  }
+
+  .change {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.75);
+    background: transparent;
+    border: 0;
+    border-radius: 50%; /* 圆形按钮 */
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.25s ease;
+    }
+
+    &:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.15); /* 磨砂提亮 */
+
+      svg {
+        transform: scale(1.15); /* 图标微悬浮放大 */
+      }
+    }
+
+    &:active {
+      transform: scale(0.92); /* 按压微缩反弹 */
+    }
+
+    &:focus-visible {
+      outline: none;
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+
+  .nga-if-control {
+    position: absolute;
+    left: 50%;
+    bottom: 24px; /* 提升高度增强悬浮感 */
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* 按钮之间的呼吸间距 */
+    padding: 6px 12px; /* 容器内边距 */
+    background: rgba(20, 20, 20, 0.75); /* 深灰磨砂底色 */
+    border: 1px solid rgba(255, 255, 255, 0.12); /* 精致的发光微边框 */
+    border-radius: 30px; /* 胶囊圆角 */
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.4),
+      0 2px 8px rgba(0, 0, 0, 0.2); /* 悬浮大阴影 */
+    z-index: 9999999;
+  }
+}
+
+.nga-img-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes nga-img-loader {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

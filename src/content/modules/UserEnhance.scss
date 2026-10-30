@@ -1,0 +1,43 @@
+.nga-user-enhance {
+  display: flex;
+  flex-wrap: wrap;
+
+  > div {
+    box-sizing: border-box;
+    width: 50%;
+    padding-right: 3px;
+  }
+}
+
+.nga-user-location {
+  display: inline-flex;
+  align-items: center;
+
+  > span {
+    margin-left: 5px;
+  }
+
+  .loading {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: 1px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 100%;
+    animation: loading-circle infinite 0.75s linear;
+  }
+
+  .nga-req-retry:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+@keyframes loading-circle {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

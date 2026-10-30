@@ -1,14 +1,13 @@
-import { NGA_Module, NGABBSScript } from "../core/app";
+import type { NGA_Module, NGABBSScript } from '../core/app';
 
 export const DomainRedirectModule: NGA_Module = {
-  name: "DomainRedirect",
-  title: "强制域名重定向",
+  name: 'DomainRedirect',
 
   initFunc(app: NGABBSScript) {
-    const target = app.setting.advanced.domainRedirectTarget as string;
+    const target = app.setting.advanced.domainRedirectTarget;
     if (target && window.location.host !== target) {
       const newUrl = window.location.href.replace(window.location.host, target);
       window.location.replace(newUrl);
     }
-  }
+  },
 };

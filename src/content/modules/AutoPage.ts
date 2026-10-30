@@ -1,34 +1,34 @@
-import { NGA_Module, NGABBSScript } from "../core/app";
+import type { NGA_Module, NGABBSScript } from '../core/app';
 
 let scrollListener: (() => void) | null = null;
 
 export const AutoPageModule: NGA_Module = {
-  name: "AutoPage",
+  name: 'AutoPage',
 
   initFunc(app: NGABBSScript) {
     if (app.setting.normal.autoPage) {
-      document.body.classList.add("hld__reply-fixed");
+      document.body.classList.add('nga-reply-fixed');
     }
   },
 
   renderAlwaysFunc(app: NGABBSScript) {
     if (!app.setting.normal.autoPage) return;
 
-    if (document.getElementById("hld__next_page")) return;
+    if (document.getElementById('nga-next-page')) return;
 
-    const pagebbtm = document.getElementById("pagebbtm");
+    const pagebbtm = document.getElementById('pagebbtm');
     if (!pagebbtm) return;
 
-    const stdbtns = pagebbtm.querySelectorAll('.stdbtn:not([hld-auto-page="ok"])');
+    const stdbtns = pagebbtm.querySelectorAll('.stdbtn:not([nga-auto-page="ok"])');
     stdbtns.forEach((btn) => {
-      const tds = btn.querySelectorAll("td");
+      const tds = btn.querySelectorAll('td');
       tds.forEach((td) => {
-        const a = td.querySelector("a");
-        if (a && a.textContent?.trim() === ">") {
-          a.id = "hld__next_page";
+        const a = td.querySelector('a');
+        if (a && a.textContent?.trim() === '>') {
+          a.id = 'nga-next-page';
 
           if (scrollListener) {
-            window.removeEventListener("scroll", scrollListener);
+            window.removeEventListener('scroll', scrollListener);
           }
 
           scrollListener = () => {
@@ -37,22 +37,22 @@ export const AutoPageModule: NGA_Module = {
             const documentHeight = document.documentElement.scrollHeight;
 
             if (scrollTop !== 0 && Math.ceil(scrollTop) + windowHeight >= documentHeight - 20) {
-              const nextBtn = document.getElementById("hld__next_page");
+              const nextBtn = document.getElementById('nga-next-page');
               if (nextBtn) {
                 nextBtn.click();
-                nextBtn.removeAttribute("id");
+                nextBtn.removeAttribute('id');
                 if (scrollListener) {
-                  window.removeEventListener("scroll", scrollListener);
+                  window.removeEventListener('scroll', scrollListener);
                   scrollListener = null;
                 }
               }
             }
           };
 
-          window.addEventListener("scroll", scrollListener);
+          window.addEventListener('scroll', scrollListener);
         }
       });
-      btn.setAttribute("hld-auto-page", "ok");
+      btn.setAttribute('nga-auto-page', 'ok');
     });
-  }
+  },
 };

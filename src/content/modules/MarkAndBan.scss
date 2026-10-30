@@ -1,0 +1,372 @@
+@use '../../styles/variables' as *;
+
+.nga-icon-btn {
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 0 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  svg {
+    width: 10px;
+    height: 10px;
+    stroke: currentColor;
+    stroke-width: 3;
+    fill: none;
+  }
+
+  &:hover {
+    color: $nga-color-danger;
+  }
+}
+.nga-banned {
+  display: inline-block;
+  color: $nga-color-danger;
+  border: 1px dashed $nga-color-danger;
+  padding: 10px 20px;
+  font-weight: bold;
+
+  > div {
+    font-weight: normal;
+  }
+}
+.nga-banned-block:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.nga-marks-container {
+  margin-left: 5px;
+  font-size: 12px;
+
+  > span {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+}
+
+/* 仿 NGA 论坛经典泥潭弹窗风格 */
+.nga-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .nga-popup-panel {
+    width: 320px;
+    background-color: $nga-color-bg-paper;
+    border: 1px solid $nga-color-border-brown;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+    animation: nga-popup-fade-in 0.15s ease-out;
+  }
+
+  @keyframes nga-popup-fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .nga-popup-titlebar {
+    background-color: $nga-color-bg-hover;
+    border-bottom: 1px solid $nga-color-border-brown;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .nga-popup-title-text {
+      font-size: 13px;
+      font-weight: bold;
+      color: $nga-color-text-darkred;
+    }
+
+    .nga-popup-close-btn {
+      color: $nga-color-text-darkred;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        color: $nga-color-danger;
+      }
+    }
+  }
+
+  .nga-popup-body {
+    padding: 12px;
+
+    .nga-popup-user-info {
+      font-size: 11px;
+      color: $nga-color-text-desc-brown;
+      margin-bottom: 8px;
+    }
+
+    .nga-popup-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 8px;
+      border: 1px solid $nga-color-border-brown;
+      border-radius: 3px;
+      font-size: 12px;
+      background-color: $nga-color-bg-paper-pure;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+
+      &:focus {
+        border-color: $nga-color-text-darkred;
+      }
+    }
+
+    .nga-popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+
+      .nga-popup-btn {
+        background: $nga-color-btn-bg;
+        border: 1px solid $nga-color-btn-border;
+        color: $nga-color-btn-text;
+        padding: 4px 12px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: bold;
+        transition: all 0.2s;
+
+        &:hover {
+          background: $nga-color-btn-hover;
+          color: $nga-color-bg-paper-pure;
+        }
+
+        &:active {
+          background: $nga-color-btn-active;
+          color: $nga-color-bg-paper-pure;
+        }
+
+        &.nga-popup-btn-save {
+          background: $nga-color-text-darkred;
+          border-color: $nga-color-text-darkred;
+          color: $nga-color-text-gold;
+
+          &:hover {
+            background: $nga-color-btn-critical-hover;
+            border-color: $nga-color-btn-critical-hover;
+            color: $nga-color-bg-paper-pure;
+          }
+
+          &:active {
+            background: $nga-color-btn-critical-active;
+            border-color: $nga-color-btn-critical-active;
+            color: $nga-color-bg-paper-pure;
+          }
+        }
+      }
+    }
+  }
+
+  /* 宽面板（标签编辑弹窗使用） */
+  .nga-popup-panel-wide {
+    width: 480px;
+  }
+
+  /* 标签编辑表格 */
+  .nga-popup-mark-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 8px;
+
+    th {
+      text-align: left;
+      padding: 4px 6px;
+      font-weight: bold;
+      color: $nga-color-text-darkred;
+      border-bottom: 1px solid $nga-color-border-brown;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 4px 4px;
+      vertical-align: middle;
+    }
+
+    .nga-mark-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      border: 1px solid $nga-color-border-brown;
+      border-radius: 3px;
+      font-size: 12px;
+      background-color: $nga-color-bg-paper-pure;
+      outline: none;
+      transition: border-color 0.2s;
+
+      &:focus {
+        border-color: $nga-color-text-darkred;
+      }
+    }
+  }
+
+  /* 原生颜色选择器 */
+  .nga-popup-color-input {
+    width: 28px;
+    height: 24px;
+    padding: 1px;
+    border: 1px solid $nga-color-border-brown;
+    border-radius: 3px;
+    cursor: pointer;
+    background: none;
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 1px;
+    }
+
+    &::-webkit-color-swatch {
+      border: none;
+      border-radius: 2px;
+    }
+  }
+
+  /* 备注输入 */
+  .nga-popup-desc-input {
+    width: 100%;
+    min-width: 60px;
+    box-sizing: border-box;
+    padding: 4px 6px;
+    border: 1px solid $nga-color-border-brown;
+    border-radius: 3px;
+    font-size: 11px;
+    background-color: $nga-color-bg-paper-pure;
+    outline: none;
+    resize: none;
+    transition:
+      border-color 0.2s,
+      height 0.2s;
+    font-family: inherit;
+
+    &:focus {
+      border-color: $nga-color-text-darkred;
+      height: 3em;
+    }
+  }
+
+  /* 删除标签行按钮 */
+  .nga-mark-row-del {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: $nga-color-text-desc;
+    transition: color 0.2s;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      color: $nga-color-danger;
+    }
+  }
+
+  /* 添加新标签按钮区域 */
+  .nga-popup-add-row {
+    margin-bottom: 10px;
+
+    .nga-popup-btn-add {
+      background: none;
+      border: 1px dashed $nga-color-border-brown;
+      color: $nga-color-text-desc-brown;
+      padding: 4px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      &:hover {
+        border-color: $nga-color-text-darkred;
+        color: $nga-color-text-darkred;
+      }
+    }
+  }
+
+  /* 标签历史区域 */
+  .nga-popup-tag-history {
+    margin-bottom: 10px;
+    border-top: 1px solid $nga-color-border-dashed;
+    padding-top: 8px;
+
+    .nga-popup-tag-history-title {
+      font-size: 11px;
+      font-weight: bold;
+      color: $nga-color-text-desc-brown;
+      margin-bottom: 6px;
+    }
+
+    .nga-popup-tag-history-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-height: 120px;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background: $nga-color-border-brown;
+      }
+    }
+
+    .nga-popup-tag-history-item {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      line-height: 18px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}

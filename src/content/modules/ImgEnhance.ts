@@ -1,4 +1,6 @@
-import { NGA_Module, NGABBSScript } from "../core/app";
+import _style_ImgEnhance from './ImgEnhance.scss?inline';
+import { createIcons, ChevronLeft, ChevronRight, RotateCcw, RotateCw } from 'lucide';
+import type { NGA_Module, NGABBSScript } from '../core/app';
 
 interface ImageItem {
   element: HTMLImageElement;
@@ -14,34 +16,37 @@ interface ViewerState {
   top: number;
 }
 
-const VIEWER_ID = "hld__img_full";
+const VIEWER_ID = 'nga-img-full';
 const MIN_VIEWER_SIZE = 50;
 const ZOOM_STEP = 0.2;
 
-const isSmileImage = (img: HTMLImageElement) => img.className.includes("smile");
+const isSmileImage = (img: HTMLImageElement) => img.className.includes('smile');
 
 const getImageUrl = (img: HTMLImageElement) =>
   img.dataset.srcorg ||
   img.dataset.srclazy ||
   img.currentSrc ||
-  img.getAttribute("src")?.replace(".medium.jpg", "") ||
-  "";
+  img.getAttribute('src')?.replace('.medium.jpg', '') ||
+  '';
 
 const collectImages = (current: HTMLImageElement): ImageItem[] => {
-  const scope = current.closest(".postcontent") ?? current.parentElement;
-  const images = scope?.querySelectorAll<HTMLImageElement>("img[hld__imglist='ready']") ?? [];
+  const scope = current.closest('.postcontent') ?? current.parentElement;
+  const images = scope?.querySelectorAll<HTMLImageElement>("img[nga-imglist='ready']") ?? [];
 
   return Array.from(images)
     .map((element) => ({ element, url: getImageUrl(element) }))
-    .filter((item) => item.url && item.url !== "about:blank");
+    .filter((item) => item.url && item.url !== 'about:blank');
 };
 
-const createButton = (className: string, text: string, title: string) => {
-  const button = document.createElement("button");
-  button.type = "button";
+const createButton = (className: string, iconName: string, title: string) => {
+  const button = document.createElement('button');
+  button.type = 'button';
   button.className = `change ${className}`;
-  button.textContent = text;
   button.title = title;
+
+  const icon = document.createElement('i');
+  icon.dataset.lucide = iconName;
+  button.appendChild(icon);
   return button;
 };
 
@@ -65,15 +70,15 @@ const applyBox = (state: ViewerState, container: HTMLElement) => {
 };
 
 const fitImage = (image: HTMLImageElement) => {
-  image.style.width = "";
-  image.style.height = "";
+  image.style.width = '';
+  image.style.height = '';
 
   if (image.naturalWidth >= image.naturalHeight) {
-    image.style.width = "100%";
-    image.style.height = "auto";
+    image.style.width = '100%';
+    image.style.height = 'auto';
   } else {
-    image.style.height = "100%";
-    image.style.width = "auto";
+    image.style.height = '100%';
+    image.style.width = 'auto';
   }
 };
 
@@ -81,14 +86,14 @@ const renderImage = (
   state: ViewerState,
   image: HTMLImageElement,
   container: HTMLElement,
-  loader: HTMLElement
+  loader: HTMLElement,
 ) => {
   const item = state.items[state.index];
   if (!item) return;
 
   state.rotation = 0;
   setInitialBox(state, container);
-  image.style.transform = "";
+  image.style.transform = '';
   image.hidden = true;
   loader.hidden = false;
 
@@ -112,7 +117,7 @@ const openViewer = (current: HTMLImageElement) => {
 
   const currentIndex = Math.max(
     0,
-    items.findIndex((item) => item.element === current)
+    items.findIndex((item) => item.element === current),
   );
   const state: ViewerState = {
     items,
@@ -120,36 +125,41 @@ const openViewer = (current: HTMLImageElement) => {
     rotation: 0,
     size: 0,
     left: 0,
-    top: 0
+    top: 0,
   };
 
-  const overlay = document.createElement("div");
+  const overlay = document.createElement('div');
   overlay.id = VIEWER_ID;
-  overlay.title = "点击背景关闭";
+  overlay.title = '点击背景关闭';
 
-  const loader = document.createElement("div");
-  loader.id = "loader";
+  const loader = document.createElement('div');
+  loader.id = 'loader';
   overlay.appendChild(loader);
 
-  const container = document.createElement("div");
-  container.className = "hld__img_container hld__zoom-target";
+  const container = document.createElement('div');
+  container.className = 'nga-img-container nga-zoom-target';
 
-  const image = document.createElement("img");
-  image.className = "hld__img hld__zoom-target";
-  image.title = "鼠标滚轮放大/缩小\n左键拖动移动";
+  const image = document.createElement('img');
+  image.className = 'nga-img nga-zoom-target';
+  image.title = '鼠标滚轮放大/缩小\n左键拖动移动';
   container.appendChild(image);
   overlay.appendChild(container);
 
-  const controls = document.createElement("div");
-  controls.className = "hld__if_control";
-  const prevButton = createButton("prev-img", "上一张", "本楼内上一张");
-  const rotateLeftButton = createButton("rotate-left", "左旋", "逆时针旋转90°");
-  const rotateRightButton = createButton("rotate-right", "右旋", "顺时针旋转90°");
-  const nextButton = createButton("next-img", "下一张", "本楼内下一张");
+  const controls = document.createElement('div');
+  controls.className = 'nga-if-control';
+  const prevButton = createButton('prev-img', 'chevron-left', '上一张 (本楼内上一张)');
+  const rotateLeftButton = createButton('rotate-left', 'rotate-ccw', '逆时针旋转90°');
+  const rotateRightButton = createButton('rotate-right', 'rotate-cw', '顺时针旋转90°');
+  const nextButton = createButton('next-img', 'chevron-right', '下一张 (本楼内下一张)');
   controls.append(prevButton, rotateLeftButton, rotateRightButton, nextButton);
   overlay.appendChild(controls);
 
-  prevButton.addEventListener("click", (event) => {
+  createIcons({
+    icons: { ChevronLeft, ChevronRight, RotateCcw, RotateCw },
+    root: controls,
+  });
+
+  prevButton.addEventListener('click', (event) => {
     event.stopPropagation();
     if (state.index > 0) {
       state.index -= 1;
@@ -158,7 +168,7 @@ const openViewer = (current: HTMLImageElement) => {
     clearSelection();
   });
 
-  nextButton.addEventListener("click", (event) => {
+  nextButton.addEventListener('click', (event) => {
     event.stopPropagation();
     if (state.index + 1 < state.items.length) {
       state.index += 1;
@@ -173,24 +183,35 @@ const openViewer = (current: HTMLImageElement) => {
     clearSelection();
   };
 
-  rotateLeftButton.addEventListener("click", (event) => {
+  rotateLeftButton.addEventListener('click', (event) => {
     event.stopPropagation();
     rotate(-90);
   });
 
-  rotateRightButton.addEventListener("click", (event) => {
+  rotateRightButton.addEventListener('click', (event) => {
     event.stopPropagation();
     rotate(90);
   });
 
-  overlay.addEventListener("click", (event) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') destroyViewer();
+  };
+
+  const destroyViewer = () => {
+    document.removeEventListener('keydown', handleKeyDown);
+    overlay.remove();
+  };
+
+  document.addEventListener('keydown', handleKeyDown);
+
+  overlay.addEventListener('click', (event) => {
     if (event.target !== image && event.target !== container) {
-      overlay.remove();
+      destroyViewer();
     }
   });
 
   overlay.addEventListener(
-    "wheel",
+    'wheel',
     (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -210,10 +231,10 @@ const openViewer = (current: HTMLImageElement) => {
       state.size = nextSize;
       applyBox(state, container);
     },
-    { passive: false }
+    { passive: false },
   );
 
-  image.addEventListener("pointerdown", (event) => {
+  image.addEventListener('pointerdown', (event) => {
     event.preventDefault();
     image.setPointerCapture(event.pointerId);
 
@@ -230,14 +251,14 @@ const openViewer = (current: HTMLImageElement) => {
 
     const cleanup = () => {
       image.releasePointerCapture(event.pointerId);
-      document.removeEventListener("pointermove", onPointerMove);
-      document.removeEventListener("pointerup", cleanup);
-      document.removeEventListener("pointercancel", cleanup);
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', cleanup);
+      document.removeEventListener('pointercancel', cleanup);
     };
 
-    document.addEventListener("pointermove", onPointerMove);
-    document.addEventListener("pointerup", cleanup);
-    document.addEventListener("pointercancel", cleanup);
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', cleanup);
+    document.addEventListener('pointercancel', cleanup);
   });
 
   document.body.appendChild(overlay);
@@ -245,38 +266,30 @@ const openViewer = (current: HTMLImageElement) => {
 };
 
 export const ImgEnhanceModule: NGA_Module = {
-  name: "ImgEnhance",
-  title: "图片增强",
+  name: 'ImgEnhance',
+
+  initFunc(app: NGABBSScript) {
+    if (!app.setting.normal.imgEnhance) return;
+    const styleEl = document.createElement('style');
+    styleEl.textContent = _style_ImgEnhance;
+    document.head.appendChild(styleEl);
+  },
 
   renderFormsFunc($el: HTMLElement, app: NGABBSScript) {
-    $el.querySelectorAll<HTMLImageElement>("img").forEach((img) => {
+    $el.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
       if (isSmileImage(img)) return;
 
-      img.setAttribute("hld__imglist", "ready");
-      img.removeAttribute("onload");
-      img.removeAttribute("onclick");
+      img.setAttribute('nga-imglist', 'ready');
+      img.removeAttribute('onload');
+      img.removeAttribute('onclick');
 
-      if (!app.setting.normal.imgEnhance || img.dataset.hldImgEnhanceBound) return;
-      img.dataset.hldImgEnhanceBound = "true";
-      img.addEventListener("click", (event) => {
+      if (!app.setting.normal.imgEnhance || img.dataset.ngaImgEnhanceBound) return;
+      img.dataset.ngaImgEnhanceBound = 'true';
+      img.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
         openViewer(img);
       });
     });
   },
-
-  style: `
-    .postcontent img { margin: 0 5px 5px 0 !important; box-shadow: none !important; outline: none !important; max-height: none !important; }
-    .postcontent img[hld__imglist='ready'] { cursor: zoom-in; }
-    #hld__img_full { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 99999; }
-    #hld__img_full #loader { position: absolute; top: 50%; left: 50%; width: 36px; height: 36px; margin: -18px 0 0 -18px; border: 3px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: hld-img-loader 0.8s linear infinite; }
-    .hld__img_container { position: absolute; display: flex; justify-content: center; align-items: center; }
-    #hld__img_full img { cursor: move; transition: transform 0.2s ease; user-select: none; }
-    .hld__if_control { position: absolute; display: flex; left: 50%; bottom: 15px; transform: translateX(-50%); height: 40px; background: rgba(0, 0, 0, 0.65); z-index: 9999999; }
-    #hld__img_full .change { min-width: 48px; height: 40px; padding: 0 10px; color: #fff; background: transparent; border: 0; border-left: 1px solid rgba(255, 255, 255, 0.18); cursor: pointer; }
-    #hld__img_full .change:first-child { border-left: 0; }
-    #hld__img_full .change:hover { background: rgba(255, 255, 255, 0.16); }
-    @keyframes hld-img-loader { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
-  `
 };

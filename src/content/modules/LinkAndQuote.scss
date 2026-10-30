@@ -1,0 +1,19 @@
+.nga-quote-fold {
+  height: 150px;
+  overflow: hidden;
+  position: relative;
+}
+
+.nga-quote-box {
+  padding: 10px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f2eddf;
+  text-align: center;
+
+  .nga-excel-body & {
+    background: #fff;
+  }
+}
